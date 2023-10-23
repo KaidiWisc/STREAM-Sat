@@ -18,4 +18,5 @@ The output is a user-defined number of precipitation and noise ensemble.
 
 The performance of the ensemble can be evaluated by CR_calc.py and CRPS_calc.py.
 
+We have a 12-page PowerPoint to highlight STREAM-Sat
 For any questions, feel free to contact Kaidi Peng (kaidi.peng@wisc.edu).
