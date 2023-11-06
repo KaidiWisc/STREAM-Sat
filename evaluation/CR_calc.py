@@ -2,17 +2,17 @@
 """
 Created on Tue Oct 11 10:16:49 2022
 
-Containing Ratio:CR is a popular method to evaluate ensemble performance
+Containing Ratio: CR is a popular method to evaluate ensemble performance
 
 Input: 
-    IMERG precipotation to be compared with STREAM-Sat prcipitation ensembles
-    STREAM precipitation ensemble
+    IMERG precipitation to be compared with STREAM-Sat precipitation ensembles
+    STREAM-Sat precipitation ensemble
     "ground truth" StageIV is used here
 
 Output；
     CR in four categories hits, missies, false alarms, correct negetive.
     Classification is based on IMERG-StageIV to evaluate STREAM-Sat performance 
-    condition on different IMERG error.
+    condition on different IMERG errors.
     CR can only be calculated for STREAM-Sat ensembles
     
 @author: Kaidi Peng
