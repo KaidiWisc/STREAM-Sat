@@ -4,11 +4,11 @@ Created on Fri Dec 18 10:13:43 2020
 
 @author: Sam Hartke
 
-Script to generate and save netcdf of ensemble of correlated uniform noise using
-pysteps replication of local spatial structures and semi-lagrangian scheme
+Script to generate and save netcdf of ensembles of correlated uniform noise using
+Pysteps replication of local spatial structures and semi-lagrangian scheme
 based on MERRA2 wind fields
 
-details about how the noise generated and pystep package is on 
+Details about how the noise is generated and Pysteps package is on 
 
 [1] Pulkkinen, S., Nerini, D., Pérez Hortal, A. A., Velasco-Forero, C., Seed, A., 
 Germann, U., & Foresti, L. (2019). 
