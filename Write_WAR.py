@@ -10,9 +10,9 @@ Range: 0-1
 The default window size is 21*21, which means the radius of the moving window is 10.
 
 Input: IMERG netcdf file
-Ourput: Corresponding WAR netcdf file
+Output: Corresponding WAR netcdf file
 
-WAR is used as covariate in CSGD model.
+WAR is used as a covariate in the CSGD model.
 It is also needed in STREAM-Sat ensemble generation.
 """
 
