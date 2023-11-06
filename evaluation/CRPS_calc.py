@@ -2,7 +2,7 @@
 """
 Created on Tue Oct 11 10:16:49 2022
 
-The continuous ranked probability skill score :CRPS
+The continuous ranked probability skill score : CRPS
 is another popular method to evaluate ensemble performance
 
 Reference:
@@ -13,14 +13,14 @@ Reference:
 
 
 Input: 
-    IMERG precipotation to be compared with STREAM-Sat prcipitation ensembles
+    IMERG precipitation to be compared with STREAM-Sat precipitation ensembles
     STREAM-Sat precipitation ensemble
     "ground truth" StageIV is used here
 
 Output；
     CRPS in four categories hits, missies, false alarms, correct negetive.
     Classification is based on IMERG-StageIV to evaluate STREAM performance 
-    condition on different IMERG error.
+    condition on different IMERG errors.
     CRPS for STREAM-Sat ensembles are equivalent to MAE for IMERG
     
 @author: Kaidi Peng
