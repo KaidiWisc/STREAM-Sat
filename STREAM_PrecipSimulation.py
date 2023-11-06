@@ -2,7 +2,7 @@
 """
 Created on Fri Dec 18 11:17:25 2020
 
-This script uses CSGD error models trained over study area
+This script uses CSGD error models trained over the study area
 to transform spatiotemporally correlation uniform noise into rainfall values
 """
 
