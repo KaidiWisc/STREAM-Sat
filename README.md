@@ -20,5 +20,5 @@ The performance of the ensemble can be evaluated by CR_calc.py and CRPS_calc.py.
 
 Details about CSGD are on https://github.com/KaidiWisc/CSGD_error_model.git
 
-We have a 12-page PowerPoint to highlight STREAM-Sat.
+We have a 12-page PowerPoint to summarize STREAM-Sat.
 For any questions, feel free to contact Kaidi Peng (kaidi.peng@wisc.edu).
