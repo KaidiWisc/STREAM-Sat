@@ -1,5 +1,5 @@
 # STREAM-Sat
-# Large-Scale Benchmarking of a Near-Realtime Global Satellite-Only Ensemble Precipitation Dataset
+# STREAM-Sat: A Novel Near-Realtime Quasi-global Satellite-Only Ensemble Precipitation Dataset
 Kaidi Peng et al.
 
 This repository is to create near-realtime global precipitation ensembles that condition on satellite observations (e.g., IMERG: Integrated Multi-satellitE Retrievals for GPM; https://gpm.nasa.gov/data/imerg). We unified the methods proposed in Li et al. (2023) [doi:10.1109/tgrs.2023.3235270](https://ieeexplore.ieee.org/document/10011447) and Hartke et al. (2022) [https://doi.org/10.1029/2021WR031650](https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2021WR031650). We tried to solve the challenge of Near-Realtime (NRT) global precipitation generation due to the lack of ground-based gauge network and the complex error of satellite precipitation. 
@@ -19,6 +19,8 @@ The output is a user-defined number of precipitation and noise ensemble (20 in t
 The performance of the ensemble can be evaluated by CR_calc.py and CRPS_calc.py.
 
 Details about CSGD are on https://github.com/KaidiWisc/CSGD_error_model.git
+
+The currently available STREAM-Sat data is over the year 2017. DOI: 10.5061/dryad.c59zw3rfk
 
 We have a 12-page PowerPoint to summarize STREAM-Sat.
 For any questions, feel free to contact Kaidi Peng (kaidi.peng@wisc.edu).
