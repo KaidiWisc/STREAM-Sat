@@ -20,7 +20,8 @@ The performance of the ensemble can be evaluated by CR_calc.py and CRPS_calc.py.
 
 Details about CSGD are on https://github.com/KaidiWisc/CSGD_error_model.git
 
-The currently available STREAM-Sat data is over the year 2017. DOI: 10.5061/dryad.c59zw3rfk
+The currently available STREAM-Sat data is over the year 2017. 
+Peng, Kaidi (2023). Data from: STREAM-Sat: a novel near-realtime quasi-global satellite-only ensemble precipitation [Dataset]. Dryad. https://doi.org/10.5061/dryad.c59zw3rfk
 
 We have a 12-page PowerPoint to summarize STREAM-Sat.
 For any questions, feel free to contact Kaidi Peng (kaidi.peng@wisc.edu).
