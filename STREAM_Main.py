@@ -54,8 +54,9 @@ nEns = 2 # number of ensemble members to generate
 # python multiprocessing package or high throughput computation system could be used.
 
 dt = date(2017,8,1) # date to start simulation at 2017.8.1 to 2017.8.31 
-
-ts = 31*48 # number of timesteps to run simulation for [half-hrs]
+numtsday=24 # number of time steps in a day, 48: half-hourly; 24: hourly
+numday=31 # number of days to simulate
+ts = numday*numtsday # number of timesteps to run simulation for [hrs/half-hrs]
 
 obsInFname = "IMERGE.hourly.nc"  # 2017 whole year
 
@@ -65,10 +66,9 @@ paramsInFname = "csgd_NLmodel_WAR.nc"  #
 
 CSGDWin=10  #CSGD model training window (i.e., the resolution of CSGD models, 10 in this example)
 
-
 # ---  output file names  ---
 
-end_dt = dt + timedelta(hours=(ts-1)) # end date of simulation
+end_dt = dt + timedelta(hours=(numday*24-1)) # end date of simulation
 noiseOutFname =  "noise_%s_%s.nc"%(dt.strftime('%Y%m%d'),end_dt.strftime('%Y%m%d'))  # path for noise ensemble output
 
 precipOutFname = "STREAM_%s_%s.nc"%(dt.strftime('%Y%m%d'),end_dt.strftime('%Y%m%d'))  # path for precipitation ensemble output
@@ -79,7 +79,7 @@ precipOutFname = "STREAM_%s_%s.nc"%(dt.strftime('%Y%m%d'),end_dt.strftime('%Y%m%
 #%%
 
 # --- Generate noise ensemble and save to netcdf noiseOutFname
-generateNoise(nEns,ts,dt,obsInFname,windInFname,noiseOutFname)
+generateNoise(nEns,ts,dt,obsInFname,windInFname,noiseOutFname,numtsday)
 executionTime = (time.time() - startTime)
 print('Noise finished. time in minutes: ' + str(executionTime/60))
 
@@ -94,7 +94,7 @@ xsize = np.shape(simPrcp)[3]
 new_cdf = Dataset(precipOutFname, 'w', format = "NETCDF4", clobber=True)
 
 # create array of time stamps
-time_hrs = [datetime(dt.year,dt.month,dt.day,0,0)+n*timedelta(hours=1) for n in range(ts)]
+time_hrs = [datetime(dt.year,dt.month,dt.day,0,0)+n*timedelta(hours=24/numtsday) for n in range(ts)]
 units = 'hours since 1970-01-01 00:00:00 UTC'
 
 # create dimensions
