@@ -34,13 +34,8 @@ import numpy as np
 
 # the number of ensembles
 ens=20
-
-dtstart = date(2017,8,1)
-dtend = date(2017,8,31)
-
 obsFname = "IMERGE.hourly.nc"
 obsds = Dataset(obsFname)
-dur=(dtend-dtstart).days +24
 
 imergobs= obsds.variables['prcp'][:,:,:] 
 
