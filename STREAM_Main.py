@@ -5,8 +5,8 @@ Created on Thu Sep 23 10:49:40 2021
 This is the main code to generate STREAM ensembles.
 
 Input: 
-IMERG precipitation: regridding hourly 0.1deg IMERGE.hourly.nc; 
-MERRA2 wind U,V components : regridding hourly 0.1deg MERRA2_0.1.hourly.nc; 
+IMERG precipitation: regridding half-hourly 0.1deg IMERGE.hourly.nc; 
+MERRA2 wind U,V components : regridding half-hourly 0.1deg MERRA2_0.1.hourly.nc; 
 IMERG has its own motion vector, which is 0.1deg half-hourly. If available, it can be used as well!
 Here we use MERRA U850,V850 as an example.
 CSGD error model: csgd_NLmodel_WAR.nc. CSGD model could use GPM-2BCMB as reference!
@@ -55,7 +55,7 @@ nEns = 2 # number of ensemble members to generate
 
 dt = date(2017,8,1) # date to start simulation at 2017.8.1 to 2017.8.31 
 
-ts = 31*24 # number of timesteps to run simulation for [hrs]
+ts = 31*48 # number of timesteps to run simulation for [half-hrs]
 
 obsInFname = "IMERGE.hourly.nc"  # 2017 whole year
 
