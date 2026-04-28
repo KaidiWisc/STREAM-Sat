@@ -5,9 +5,9 @@ Created on Thu Sep 23 10:49:40 2021
 This is the main code to generate STREAM ensembles.
 
 Input: 
-IMERG precipitation: regridding half-hourly 0.1deg IMERGE.hourly.nc; 
-MERRA2 wind U,V components : regridding half-hourly 0.1deg MERRA2_0.1.hourly.nc; 
-IMERG has its own motion vector, which is 0.1deg half-hourly. If available, it can be used as well!
+IMERG precipitation: regridding hourly 0.1deg IMERGE.hourly.nc; 
+MERRA2 wind U,V components : regridding hourly 0.1deg MERRA2_0.1.hourly.nc; 
+IMERG has its own motion vector, which is 0.1deg hourly. If available, it can be used as well!
 Here we use MERRA U850,V850 as an example.
 CSGD error model: csgd_NLmodel_WAR.nc. CSGD model could use GPM-2BCMB as reference!
 The validation work about this choice is in
@@ -58,6 +58,7 @@ numtsday=24 # number of time steps in a day, 48: half-hourly; 24: hourly
 numday=31 # number of days to simulate
 ts = numday*numtsday # number of timesteps to run simulation for [hrs/half-hrs]
 
+# please make sure the input data are the same temporal resolution as the final STREAM-Sat output
 obsInFname = "IMERGE.hourly.nc"  # 2017 whole year
 
 windInFname ="MERRA2_0.1.hourly.nc"  # Whole year
@@ -84,7 +85,7 @@ executionTime = (time.time() - startTime)
 print('Noise finished. time in minutes: ' + str(executionTime/60))
 
 # --- Simulate STREAM ensemble of precipitation
-simPrcp = simulatePrecip(dt,nEns,ts,obsInFname,noiseOutFname,paramsInFname,CSGDWin)
+simPrcp = simulatePrecip(dt,nEns,ts,obsInFname,noiseOutFname,paramsInFname,CSGDWin,numtsday)
 
 # ----- Save simulated ensemble of precip to netcdf precipOutFname ------------
 
@@ -94,7 +95,7 @@ xsize = np.shape(simPrcp)[3]
 new_cdf = Dataset(precipOutFname, 'w', format = "NETCDF4", clobber=True)
 
 # create array of time stamps
-time_hrs = [datetime(dt.year,dt.month,dt.day,0,0)+n*timedelta(hours=24/numtsday) for n in range(ts)]
+time_hrs = [datetime(dt.year,dt.month,dt.day,0,0)+n*timedelta(hours=np.around(24/numtsday,1)) for n in range(ts)]
 units = 'hours since 1970-01-01 00:00:00 UTC'
 
 # create dimensions

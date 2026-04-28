@@ -139,8 +139,8 @@ def latlondistance(lat1,lon1,lat2,lon2):     # it probably more precise [it is d
 
 # =============================================================================
 
-
-def getCorrNoiseAR1(n, hh, dt,obsFile,windFile,seednum):
+# #of time steps, start time
+def getCorrNoiseAR1(n, dt,obsFile,windFile,seednum,numtsday):
     
     # ---- grab hourly MERRA2 wind data at 850 mb over 35N-45N, 85W-100W [m/s]
     # MERRA2 files were downloaded from GES-DISC and aggregated to yearly files in writeWindNetcdfs.py
@@ -148,7 +148,7 @@ def getCorrNoiseAR1(n, hh, dt,obsFile,windFile,seednum):
     
     # get number of hours between start of file and date dt at hour h
     d_start = num2date(dsw.variables['time'][0],dsw.variables['time'].units)
-    ndw = 48*(dt - date(d_start.year,d_start.month,d_start.day)).days + hh
+    ndw = numtsday*(dt - date(d_start.year,d_start.month,d_start.day)).days 
     #print('Wind file start: ',d_start,ndw)
     
     
@@ -163,9 +163,8 @@ def getCorrNoiseAR1(n, hh, dt,obsFile,windFile,seednum):
     
     # get number of hours between start of file and date dt at hour h
     d_start = num2date(ds.variables['time'][0],ds.variables['time'].units)
-    nd = 48*(dt - date(d_start.year,d_start.month,d_start.day)).days + hh
+    nd = numtsday*(dt - date(d_start.year,d_start.month,d_start.day)).days 
     print(nd)
-    print(hh)
     print(dt)
     print(d_start)  # 2017-09-01 
     #print('IMERG file start: ',d_start,nd)
@@ -283,9 +282,8 @@ def getCorrNoiseAR1(n, hh, dt,obsFile,windFile,seednum):
                 # nEns,tsi,starti
 def generateNoise(n_ens,ts,dt,obsFile,windFile1,windFile2,newFile,numtsday):
     
-    hr = 0 # hour to start simulation at - we assume this is 0, but this can be changed    
     
-    end_dt = dt + timedelta(hours=(hr+int(ts/2)-1)) # end date of simulation , ts is hh
+    end_dt = dt + timedelta(hours=(int(ts/(numtsday/24))-1)) # end date of simulation , ts is hh
     
     
     print("Generating %d-member noise ensemble for %s to %s"%(n_ens,dt.strftime("%Y-%m-%d"),end_dt.strftime("%Y-%m-%d")))
@@ -303,7 +301,7 @@ def generateNoise(n_ens,ts,dt,obsFile,windFile1,windFile2,newFile,numtsday):
     new_cdf = Dataset(newFile, 'w', format = "NETCDF4", clobber=True)
     
     # create array of time stamps
-    time_hrs = [datetime(dt.year,dt.month,dt.day,0,0)+n*timedelta(hours=0.5) for n in range(ts)]
+    time_hrs = [datetime(dt.year,dt.month,dt.day,0,0)+n*timedelta(hours=np.round(24/numtsday,1)) for n in range(ts)]
     units = 'hours since 1970-01-01 00:00:00 UTC'
     
     # create dimensions
@@ -340,7 +338,7 @@ def generateNoise(n_ens,ts,dt,obsFile,windFile1,windFile2,newFile,numtsday):
     for nn in range(0,n_ens):
         
         # retrieve instance of correlated white noise for ts timesteps starting at date dt and hour hr
-        s = getCorrNoiseAR1(ts,hr,dt,obsFile,windFile1,seednum=random.randint(1,10000))
+        s = getCorrNoiseAR1(ts,dt,obsFile,windFile1,seednum=random.randint(1,10000),numtsday=numtsday)
         
         s = 0.5*(1+sp.special.erf((s/math.sqrt(2)))) # convert to uniform noise
         

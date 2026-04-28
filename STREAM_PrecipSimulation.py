@@ -77,9 +77,11 @@ def getWARfield(field,r):
 
 # ----------------------------------------------------------------------------
 
-def simulatePrecip(dt,n_ens,ts,obsFile,noiseFile,paramsFile,CSGDW,verbose=False):
+def simulatePrecip(dt,n_ens,ts,obsFile,noiseFile,paramsFile,CSGDW,numtsday,verbose=False):
     
-    end_dt = dt + timedelta(hours=(ts-1)) # end date of simulation
+
+    end_dt = dt + timedelta(hours=(int(ts/(numtsday/24))-1))
+    
     print("Generating %d-member precip ensemble for %s - %s"%(n_ens,dt.strftime("%Y-%m-%d"),end_dt.strftime("%Y-%m-%d")))
     
     # ---  indicate whether to use correlated noise or not  ---
@@ -87,14 +89,15 @@ def simulatePrecip(dt,n_ens,ts,obsFile,noiseFile,paramsFile,CSGDW,verbose=False)
     
     
     # ---------------------  READ IN SATELLITE PRECIPITATION  -----------------
-    i1 = (dt - date(dt.year,1,1)).days*24  # starting index of IMERG data for simulation period
+    ds = Dataset(obsFile)
+    d_start = num2date(ds.variables['time'][0],ds.variables['time'].units)
+    i1 = (dt - date( d_start.year, d_start.month,  d_start.day)).days*numtsday  # starting index of IMERG data for simulation period
     i2 = i1 + ts   # ending index
     
-    ds = Dataset(obsFile)
-    print(i1)
-    print(i2)
+
     obs = ds.variables['prcp'][:,:,i1:i2].astype('float32') # grab IMERG data from simulation period
     obs[obs<0.1] = 0.
+
     
     ysize = np.shape(obs)[0]
     xsize = np.shape(obs)[1]
