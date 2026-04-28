@@ -77,10 +77,10 @@ def getWARfield(field,r):
 
 # ----------------------------------------------------------------------------
 
-def simulatePrecip(dt,n_ens,ts,obsFile,noiseFile,paramsFile,CSGDW,numtsday,verbose=False):
+def simulatePrecip(dt,n_ens,ts,obsFile,noiseFile,paramsFile,CSGDW,tres,verbose=False):
     
 
-    end_dt = dt + timedelta(hours=(int(ts/(numtsday/24))-1))
+    end_dt = dt + timedelta(hours=int(ts-1)*tres)
     
     print("Generating %d-member precip ensemble for %s - %s"%(n_ens,dt.strftime("%Y-%m-%d"),end_dt.strftime("%Y-%m-%d")))
     
@@ -91,7 +91,7 @@ def simulatePrecip(dt,n_ens,ts,obsFile,noiseFile,paramsFile,CSGDW,numtsday,verbo
     # ---------------------  READ IN SATELLITE PRECIPITATION  -----------------
     ds = Dataset(obsFile)
     d_start = num2date(ds.variables['time'][0],ds.variables['time'].units)
-    i1 = (dt - date( d_start.year, d_start.month,  d_start.day)).days*numtsday  # starting index of IMERG data for simulation period
+    i1 = (dt - date( d_start.year, d_start.month,  d_start.day)).days*int(24/tres)  # starting index of IMERG data for simulation period
     i2 = i1 + ts   # ending index
     
 

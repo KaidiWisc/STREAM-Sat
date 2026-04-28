@@ -54,9 +54,10 @@ nEns = 2 # number of ensemble members to generate
 # python multiprocessing package or high throughput computation system could be used.
 
 dt = date(2017,8,1) # date to start simulation at 2017.8.1 to 2017.8.31 
-numtsday=24 # number of time steps in a day, 48: half-hourly; 24: hourly
+tres=1 # in hour, 1: hourly, 0.5: half hourly
+
 numday=31 # number of days to simulate
-ts = numday*numtsday # number of timesteps to run simulation for [hrs/half-hrs]
+ts = int(numday*24/tres) # number of timesteps to run simulation for [hrs/half-hrs]
 
 # please make sure the input data are the same temporal resolution as the final STREAM-Sat output
 obsInFname = "IMERGE.hourly.nc"  # 2017 whole year
@@ -80,12 +81,12 @@ precipOutFname = "STREAM_%s_%s.nc"%(dt.strftime('%Y%m%d'),end_dt.strftime('%Y%m%
 #%%
 
 # --- Generate noise ensemble and save to netcdf noiseOutFname
-generateNoise(nEns,ts,dt,obsInFname,windInFname,noiseOutFname,numtsday)
+generateNoise(nEns,ts,dt,obsInFname,windInFname,noiseOutFname,tres)
 executionTime = (time.time() - startTime)
 print('Noise finished. time in minutes: ' + str(executionTime/60))
 
 # --- Simulate STREAM ensemble of precipitation
-simPrcp = simulatePrecip(dt,nEns,ts,obsInFname,noiseOutFname,paramsInFname,CSGDWin,numtsday)
+simPrcp = simulatePrecip(dt,nEns,ts,obsInFname,noiseOutFname,paramsInFname,CSGDWin,tres)
 
 # ----- Save simulated ensemble of precip to netcdf precipOutFname ------------
 
@@ -95,7 +96,7 @@ xsize = np.shape(simPrcp)[3]
 new_cdf = Dataset(precipOutFname, 'w', format = "NETCDF4", clobber=True)
 
 # create array of time stamps
-time_hrs = [datetime(dt.year,dt.month,dt.day,0,0)+n*timedelta(hours=np.around(24/numtsday,1)) for n in range(ts)]
+time_hrs = [datetime(dt.year,dt.month,dt.day,0,0)+n*timedelta(hours=tres) for n in range(ts)]
 units = 'hours since 1970-01-01 00:00:00 UTC'
 
 # create dimensions

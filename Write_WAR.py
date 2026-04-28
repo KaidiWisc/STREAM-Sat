@@ -80,7 +80,7 @@ def getWARfield(field,r=10):
     
     return(WARfield)
 
-def writeWARfile(imerg,latstart,latend,lonstart,lonend,d=21):
+def writeWARfile(imerg,latstart,latend,lonstart,lonend,tres,d=21):
     
     ts = np.shape(imerg)[2]
     ysize = np.shape(imerg)[0]
@@ -93,7 +93,7 @@ def writeWARfile(imerg,latstart,latend,lonstart,lonend,d=21):
 
 
     # create array of time stamps
-    time_hrs = [datetime(2017,1,1,0,0)+n*timedelta(hours=1) for n in range(ts)]
+    time_hrs = [datetime(2017,1,1,0,0)+n*timedelta(hours=tres) for n in range(ts)]
     units = 'hours since 1970-01-01 00:00:00 UTC'
 
     new_file = fname
@@ -136,6 +136,7 @@ def writeWARfile(imerg,latstart,latend,lonstart,lonend,d=21):
 # 
 
 dsIMERG = xr.open_dataset("IMERGE.hourly.nc")
+tres=(dsIMERG["time"][1].data-dsIMERG["time"][0].data)/np.timedelta64(1, 'h')
 
 imerg = dsIMERG['prcp'].data
 lats0=dsIMERG["latitude"].data[0]
@@ -146,4 +147,4 @@ lons1=dsIMERG["longitude"].data[-1]
 # default rain threshold: 0.1mm/hr
 # when the observed precip. > 0.1mm/hr, it is considered as rain
 imerg[imerg<0.1]=0
-writeWARfile(imerg,lats0,lats1,lons0,lons1)
+writeWARfile(imerg,lats0,lats1,lons0,lons1,tres)
