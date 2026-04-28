@@ -281,7 +281,7 @@ def getCorrNoiseAR1(n, hh, dt,obsFile,windFile,seednum):
     return(s)
 
                 # nEns,tsi,starti
-def generateNoise(n_ens,ts,dt,obsFile,windFile1,windFile2,newFile):
+def generateNoise(n_ens,ts,dt,obsFile,windFile1,windFile2,newFile,numtsday):
     
     hr = 0 # hour to start simulation at - we assume this is 0, but this can be changed    
     
