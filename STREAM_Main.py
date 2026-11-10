@@ -47,6 +47,7 @@ startTime = time.time()
 # -----------------------------------------------------------------------------
 # -------------------  INPUT PARAMETERS SECTION  ------------------------------
 
+using_wind_speed=True  # if false, using grid cell!
 
 nEns = 2 # number of ensemble members to generate
 # each ensemble is independent
@@ -81,7 +82,7 @@ precipOutFname = "STREAM_%s_%s.nc"%(dt.strftime('%Y%m%d'),end_dt.strftime('%Y%m%
 #%%
 
 # --- Generate noise ensemble and save to netcdf noiseOutFname
-generateNoise(nEns,ts,dt,obsInFname,windInFname,noiseOutFname,tres)
+generateNoise(nEns,ts,dt,obsInFname,windInFname,noiseOutFname,tres,using_wind_speed)
 executionTime = (time.time() - startTime)
 print('Noise finished. time in minutes: ' + str(executionTime/60))
 

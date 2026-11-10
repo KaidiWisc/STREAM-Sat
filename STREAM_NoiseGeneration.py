@@ -140,7 +140,7 @@ def latlondistance(lat1,lon1,lat2,lon2):     # it probably more precise [it is d
 # =============================================================================
 
 # #of time steps, start time
-def getCorrNoiseAR1(n, dt,obsFile,windFile,seednum,tres):
+def getCorrNoiseAR1(n, dt,obsFile,windFile,seednum,tres,using_wind_speed):
     
     # ---- grab hourly MERRA2 wind data at 850 mb over 35N-45N, 85W-100W [m/s]
     # MERRA2 files were downloaded from GES-DISC and aggregated to yearly files in writeWindNetcdfs.py
@@ -180,6 +180,17 @@ def getCorrNoiseAR1(n, dt,obsFile,windFile,seednum,tres):
     xind=np.tile(np.arange(0,xsize),ysize).reshape(ysize,xsize).astype('int16')
     
     
+    # ==============================================================================
+    
+    if using_wind_speed==True:
+        tdy=latlondistance(dslat[0], dslon[0], dslat[0]+dlat, dslon[0])
+        dy=np.empty_like(imerg)
+        dy[:]=tdy
+        gridx,gridy=np.meshgrid(dslon,dslat) 
+        dx=latlondistance(gridy.flatten(), gridx.flatten(), gridy.flatten(), gridx.flatten()+dlon)
+        dx=dx.reshape(ysize,xsize)
+    #====================================================================================
+
     # create array to hold simulated noise
     s = np.empty((n,ysize,xsize),dtype=np.float32)
     
@@ -210,8 +221,6 @@ def getCorrNoiseAR1(n, dt,obsFile,windFile,seednum,tres):
     # set initial value of alpha parameter - determines degree to which noise is incorporated into field at each timestep
     alpha = 0.95
     
-    ts = 60
-    
     # --- ADVECT FIELD FORWARD IN TIME ---
     print('Running Semi-Lagrangian Scheme')
     print(n)
@@ -219,9 +228,30 @@ def getCorrNoiseAR1(n, dt,obsFile,windFile,seednum,tres):
         
         
         # get wind values from PREVIOUS hour and calculate dx, dy that correspond to this time step
-        dix= dsw.variables['U_MV'][:,:,ndw+hr-1] # eastward wind [m/s]      
         
-        diy = -dsw.variables['V_MV'][:,:,ndw+hr-1] # northward wind _> SOUTHWARD
+        # in unit of grid
+        if using_wind_speed==False:
+            dix= dsw.variables['U_MV'][:,:,ndw+hr-1] # eastward wind       
+            
+            diy = -dsw.variables['V_MV'][:,:,ndw+hr-1] # northward wind _> SOUTHWARD
+
+
+#=============================================================================
+        else:  # True
+            # get wind values from PREVIOUS hour and calculate dx, dy that correspond to this time step
+            u = dsw.variables['U850'][:,:,ndw+hr-1] # eastward wind [m/s]
+            
+            deltax = u*60.*tres*60 # distance wind travels each time step in positive x dir [m]
+            dix = deltax//dx # number of grid steps to shift in semi-lagrangian scheme in units of [0.1 deg pixels]
+            
+            v = dsw.variables['V850'][:,:,ndw+hr-1] # northward wind [m/s]
+            deltay = -v*60.*tres*60 # distance wind travels each time step in positive y dir [m]
+            diy = deltay//dy # number of grid steps to shift in semi-lagrangian scheme [0.1 deg pixels]
+
+#=====================================================================
+
+
+
 
         # print(ndw+hr-1)
         imergh = ds.variables['prcp'][:,:,nd+hr].astype('float32')
@@ -280,10 +310,13 @@ def getCorrNoiseAR1(n, dt,obsFile,windFile,seednum,tres):
     return(s)
 
                 # nEns,tsi,starti
-def generateNoise(n_ens,ts,dt,obsFile,windFile1,windFile2,newFile,tres):
+def generateNoise(n_ens,ts,dt,obsFile,windFile1,windFile2,newFile,tres,using_wind_speed):
     
+    # dt start time
+    # ts # of time steps
+    # tres in hr
     
-    end_dt = dt + timedelta(hours=int(ts-1)*tres) # end date of simulation , ts is hh
+    end_dt = dt + timedelta(hours=int(ts-1)*tres) # end date of simulation
     
     
     print("Generating %d-member noise ensemble for %s to %s"%(n_ens,dt.strftime("%Y-%m-%d"),end_dt.strftime("%Y-%m-%d")))
@@ -338,7 +371,7 @@ def generateNoise(n_ens,ts,dt,obsFile,windFile1,windFile2,newFile,tres):
     for nn in range(0,n_ens):
         
         # retrieve instance of correlated white noise for ts timesteps starting at date dt and hour hr
-        s = getCorrNoiseAR1(ts,dt,obsFile,windFile1,seednum=random.randint(1,10000),tres=tres)
+        s = getCorrNoiseAR1(ts,dt,obsFile,windFile1,random.randint(1,10000),tres,using_wind_speed)
         
         s = 0.5*(1+sp.special.erf((s/math.sqrt(2)))) # convert to uniform noise
         
